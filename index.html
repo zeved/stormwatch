@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta charset="UTF-8">
+        <title>stormwatch</title>
+        <link rel="stylesheet" type="text/css" href="assets/semantic-ui/dist/semantic.css">
+        <script src="assets/jquery/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+        <script src="assets/semantic-ui/dist/semantic.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlY0pchv9SAKylXvBXUgK9j35Qhmyln3U&libraries=places"></script>
+        <script src="map.js"></script>
+        <script src="stormwatch.js"></script>
+
+        <style>
+            #map {
+                height: 100%;
+            }
+
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            #content {
+                height: 94% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="ui top attached mini menu">
+            <div class="ui item">
+                <div class="ui toggle checkbox" data-inverted="" data-tooltip="Turns on alerts when there are strikes in the specified range" data-position="bottom left">
+                    <input type="checkbox" name="alertsOn" />
+                    <label>Alerts</label>
+                </div>
+            </div>
+
+            <div class="ui item">
+                <div class="ui right labeled input">
+                    <input type="text" placeholder="range" />
+                    <div class="ui basic label">
+                        km
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui item">
+                <label>closest strike</label>
+                <div class="ui right labeled disabled input">
+                    <input id="closest" type="text" placeholder="closest" />
+                    <div class="ui basic label">
+                        km
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui right item" >
+                <div id="thanks" class="ui icon" data-inverted="" data-tooltip="Thanks and about" data-position="bottom right">
+                    <i class="info circle icon"></i>
+                </div>
+            </div>
+        </div>
+        <div id="content" class="ui bottom attached segment">
+            <div id="loader" class="ui active dimmer">
+                <div class="ui massive text loader">Please wait...</div>
+            </div>
+
+            <div id="map"></div>
+
+            <div class="ui dimmer" id="alert">
+                <div class="content">
+                    <div class="center">
+                        <h2 class="ui inverted header">Lightning</h2>
+                        <h3 id="distance"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui basic modal">
+            <div class="ui icon header">
+                <i class="lightning icon"></i>
+                Thanks to:
+            </div>
+            <div class="ui center aligned header">
+                <div class="ui relaxed divided inverted list">
+                    <div class="item middle aligned">
+                        <i class="large middle aligned"></i>
+                        <div class="content">
+                            <a class="header" href="http://en.blitzortung.org">Blitzortung</a>
+                            <div class="description">for their data streams :D</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="large middle aligned"></i>
+                        <div class="content">
+                            <a class="header" href="https://electron.atom.io/">Electron</a>
+                            <div class="description">for their amazing crossplatform framework</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="large middle aligned"></i>
+                        <div class="content">
+                            <a class="header" href="https://semantic-ui.com/">Semantic UI</a>
+                            <div class="description">for their lovely UI framework</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui icon header">
+                <i class="user icon"></i>
+                Me:
+            </div>
+            <div class="ui center aligned header">
+                <div class="ui relaxed divided inverted list">
+                    <div class="item middle aligned">
+                        <i class="large github middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header" href="https://github.com/zeved">My Github</a>
+                        </div>
+                    </div>
+                    <div class="item middle aligned">
+                        <i class="large mail middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header">My Gmail</a>
+                            <div class="description">zeved.ionut@gmail.com</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        let map, pos, homeMarker;
+        let shell = require('electron').shell;
+
+        $(document).ready(() => { loadMap(); });
+        $(document).on('click', 'a[href^="http"]', function(event) {
+            event.preventDefault();
+            shell.openExternal(this.href);
+        });
+        $("#thanks").click(() => {
+            $('.ui.basic.modal').modal('show');
+        });
+    </script>
+</html>
